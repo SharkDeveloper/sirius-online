@@ -1,1 +1,15 @@
-.qodo
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+*.egg-info/
+venv
+.idea
+db.sqlite3
+static_root
+nginx
+docker-compose.yml
+static
+staticfiles
