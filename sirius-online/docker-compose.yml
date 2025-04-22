@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  sirius-redis:
+    image: redis:latest
+    container_name: ${REDIS_HOST}
+    env_file:
+      - .env
+    ports:
+      - "${REDIS_PORT}:6379"
+    volumes:
+      - redis_data:/data/
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+
+  sirius-nginx:
+    image: nginx:1.21-alpine
+    container_name: sirius-nginx
+    ports:
+      - "${NGINX_PORT}:80"
+      - "443:443"
+    volumes:
+      - ./nginx/certf.crt:/etc/nginx/certf.crt
+      - ./nginx/certf.key:/etc/nginx/certf.key
+      - ./nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
+      - ./static/:/var/www/static/
+    depends_on:
+      - sirius-server
+
+
+  sirius-mongodb:
+    image: mongo:4.4
+    container_name: ${MONGO_HOST}
+    env_file:
+      - .env
+    ports:
+      - "${MONGO_PORT}:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+
+  sirius-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: debug
+    container_name: ${SERVER_HOST}
+    environment:
+      - HTTP_PROXY=http://dobrinin:911@proxy.bolid.ru:3128
+      - HTTPS_PROXY=http://dobrinin:911@proxy.bolid.ru:3128
+    env_file:
+      - .env
+    volumes:
+      - ./media/:/sirius/media/
+      - .:/sirius/
+    ports:
+      - "${SERVER_PORT}:8021"
+      - "5678:5678"  # Порт для отладки
+    restart: always
+    depends_on:
+      - sirius-redis
+      - sirius-mongodb
+
+
+
+volumes:
+  redis_data:
+  mongo_data:
