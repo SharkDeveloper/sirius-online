@@ -1,1 +1,0 @@
-function b(u,o){const e=c=>{const[i,m]=c.split(" "),[A,f,p]=m.split(".").map(Number);return{elementType:i,controllerAddress:A,deviceAddress:f,elementNumber:p}},{controllerAddress:r,deviceAddress:n,elementNumber:s}=e(u.uniqueIndex),{controllerAddress:d,deviceAddress:t,elementNumber:l}=e(o.uniqueIndex);return r>d?1:r<d?-1:n>t?1:n<t?-1:s>l?1:s<l?-1:0}export{b as c};

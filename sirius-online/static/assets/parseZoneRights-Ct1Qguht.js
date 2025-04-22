@@ -1,1 +1,0 @@
-const o=r=>{const t=r[0].toString(2).padStart(16,"0").split(""),n=t[0]==="1";return{index:t[0]==="1"?parseInt(t.slice(1).join(""),2):parseInt(t.join(""),2),rights:r[1].toString(2).padStart(16,"0").split("").reverse().map((e,s)=>e==="1"?s:-1).filter(e=>e!==-1),type:n?"zone_group":"zone"}};export{o as p};
